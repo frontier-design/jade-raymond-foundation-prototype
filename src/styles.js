@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: white;
+    background-color: #F7F7F7;
     color: ${(props) => props.cursorColor || "#00A86B"};
     transition: color 0.6s ease-out;
     -webkit-font-smoothing: antialiased;
