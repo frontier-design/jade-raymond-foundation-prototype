@@ -4,7 +4,7 @@ const HeroContainer = styled.section`
   width: 100%;
   max-width: 1700px;
   margin: 0 auto;
-  padding: 50px 0px 150px 50px;
+  padding: 50px 0px 225px 50px;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 20px;

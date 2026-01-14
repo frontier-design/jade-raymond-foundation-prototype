@@ -12,20 +12,20 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #F7F7F7;
-    color: ${(props) => props.cursorColor || "#00A86B"};
-    transition: color 0.6s ease-out;
+    background-color: ${(props) => props.backgroundColor || "#F7F7F7"};
+    color: ${(props) => props.cursorColor || "#049878"};
+    transition: background-color 0.6s ease-out, color 0.6s ease-out;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {
-    background-color: #00A86B;
+    background-color: #049878;
     color: white;
   }
 
   ::-moz-selection {
-    background-color: #00A86B;
+    background-color: #049878;
     color: white;
   }
 

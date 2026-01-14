@@ -8,6 +8,8 @@ const SectionContainer = styled.section`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 30px;
+  margin-bottom: 100px;
+
 
   @media (max-width: 768px) {
     padding: 0 20px;
@@ -32,7 +34,7 @@ const LeftColumn = styled.div`
   p {
     font-size: 45px;
     line-height: 1.25;
-    padding-bottom: 100px;
+    /* padding-bottom: 100px; */
 
     @media (max-width: 768px) {
       font-size: 30px;
@@ -51,14 +53,13 @@ const RightColumn = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding-bottom: 2rem;
-  margin: auto 0;
+  align-self: end;
   opacity: ${props => props.$isLoaded ? 1 : 0};
   transition: opacity 0.6s ease-in-out;
   transition-delay: ${props => props.$delay}s;
 
   @media (min-width: 1200px) {
-    padding-top: 25vh;
+    /* padding-top: 25vh; */
   }
 
   @media (max-width: 768px) {

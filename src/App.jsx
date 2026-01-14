@@ -6,7 +6,24 @@ import ContentSection from './components/ContentSection.jsx'
 import Footer from './components/Footer.jsx'
 
 function App() {
-  const [cursorColor, setCursorColor] = useState('#00A86B')
+  const lightenColor = (color, amount) => {
+    const hex = color.replace('#', '')
+    const r = parseInt(hex.substr(0, 2), 16)
+    const g = parseInt(hex.substr(2, 2), 16)
+    const b = parseInt(hex.substr(4, 2), 16)
+    
+    const newR = Math.round(r + (255 - r) * amount)
+    const newG = Math.round(g + (255 - g) * amount)
+    const newB = Math.round(b + (255 - b) * amount)
+    
+    return `#${[newR, newG, newB].map(x => {
+      const hex = x.toString(16)
+      return hex.length === 1 ? '0' + hex : hex
+    }).join('')}`
+  }
+
+  const [cursorColor, setCursorColor] = useState('#049878')
+  const [backgroundColor, setBackgroundColor] = useState(() => lightenColor('#049878', 0.95))
   const [isGridLoaded, setIsGridLoaded] = useState(false)
   const [isHeroLoaded, setIsHeroLoaded] = useState(false)
   const [isContentLeftLoaded, setIsContentLeftLoaded] = useState(false)
@@ -14,7 +31,6 @@ function App() {
   const [isFooterLoaded, setIsFooterLoaded] = useState(false)
 
   useEffect(() => {
-    // Trigger fade-in animations at different delays
     const gridTimer = setTimeout(() => setIsGridLoaded(true), 200)
     const heroTimer = setTimeout(() => setIsHeroLoaded(true), 500)
     const contentLeftTimer = setTimeout(() => setIsContentLeftLoaded(true), 900)
@@ -31,7 +47,6 @@ function App() {
   }, [])
 
   useEffect(() => {
-    // Helper function to interpolate between two hex colors
     const interpolateColor = (color1, color2, factor) => {
       const hex1 = color1.replace('#', '')
       const hex2 = color2.replace('#', '')
@@ -54,47 +69,70 @@ function App() {
       }).join('')}`
     }
 
-    const handleMouseMove = (e) => {
-      const { clientX } = e
-      const { innerWidth } = window
+    const lightenColor = (color, amount) => {
+      const hex = color.replace('#', '')
+      const r = parseInt(hex.substr(0, 2), 16)
+      const g = parseInt(hex.substr(2, 2), 16)
+      const b = parseInt(hex.substr(4, 2), 16)
       
-      // Calculate normalized X position (0 to 1)
-      const xPercent = Math.max(0, Math.min(1, clientX / innerWidth))
+      const newR = Math.round(r + (255 - r) * amount)
+      const newG = Math.round(g + (255 - g) * amount)
+      const newB = Math.round(b + (255 - b) * amount)
       
-      // Three jade shades for three horizontal zones
-      const leftColor = '#00D68F' // Light jade (lighter than base)
-      const middleColor = '#00A86B' // Base jade
-      const rightColor = '#006B42' // Dark jade
+      return `#${[newR, newG, newB].map(x => {
+        const hex = x.toString(16)
+        return hex.length === 1 ? '0' + hex : hex
+      }).join('')}`
+    }
+
+    const leftColor = '#0ABE78'
+    const middleColor = '#049878'
+    const rightColor = '#005E40'
+    
+    let animationFrameId
+    const startTime = Date.now()
+    const animationDuration = 8000
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime
+      const progress = (elapsed % animationDuration) / animationDuration
+      
+      const cycle = (Math.sin(progress * Math.PI * 2) + 1) / 2
       
       let selectedColor
       
-      if (xPercent < 0.33) {
-        // Left third: interpolate from light jade to base jade
-        const factor = xPercent / 0.33
+      if (cycle < 0.33) {
+        const factor = cycle / 0.33
         selectedColor = interpolateColor(leftColor, middleColor, factor)
-      } else if (xPercent < 0.66) {
-        // Middle third: base jade (constant)
-        selectedColor = middleColor
-      } else {
-        // Right third: interpolate from base jade to dark jade
-        const factor = (xPercent - 0.66) / 0.34
+      } else if (cycle < 0.66) {
+        const factor = (cycle - 0.33) / 0.33
         selectedColor = interpolateColor(middleColor, rightColor, factor)
+      } else {
+        const factor = (cycle - 0.66) / 0.34
+        selectedColor = interpolateColor(rightColor, leftColor, factor)
       }
       
       setCursorColor(selectedColor)
+      
+      const bgColor = lightenColor(selectedColor, 0.95)
+      setBackgroundColor(bgColor)
+      
+      animationFrameId = requestAnimationFrame(animate)
     }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    
+    animate()
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
   }, [])
 
   useEffect(() => {
-    // Update favicon color based on cursor position
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="${cursorColor}"/></svg>`
     const blob = new Blob([svg], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(blob)
     
-    // Find existing favicon link or create new one
     let link = document.querySelector("link[rel*='icon']")
     if (!link) {
       link = document.createElement('link')
@@ -105,7 +143,6 @@ function App() {
     const previousUrl = link.href
     link.href = url
     
-    // Clean up previous blob URL on next update
     return () => {
       if (previousUrl && previousUrl.startsWith('blob:')) {
         URL.revokeObjectURL(previousUrl)
@@ -116,7 +153,7 @@ function App() {
 
   return (
     <>
-      <GlobalStyle cursorColor={cursorColor} />
+      <GlobalStyle cursorColor={cursorColor} backgroundColor={backgroundColor} />
       <GridOverlay isLoaded={isGridLoaded} delay={0.2} />
       <Hero isLoaded={isHeroLoaded} delay={0.5} />
       <ContentSection 
@@ -125,7 +162,7 @@ function App() {
         leftDelay={0.9}
         rightDelay={1.2}
       />
-      <Footer isLoaded={isFooterLoaded} delay={1.4} cursorColor={cursorColor} />
+      <Footer isLoaded={isFooterLoaded} delay={1.4} />
     </>
   )
 }

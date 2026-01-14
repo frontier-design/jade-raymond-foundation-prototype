@@ -69,7 +69,7 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$cursorColor || '#00A86B'};
+    border-color: #049878;
   }
 `
 
@@ -85,7 +85,7 @@ const Textarea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$cursorColor || '#00A86B'};
+    border-color: #049878;
   }
 `
 
@@ -93,16 +93,16 @@ const SubmitButton = styled.button`
   font-size: 16px;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   padding: 0.5rem 1rem;
-  border: 1px solid ${props => props.$cursorColor || '#00A86B'};
+  border: 1px solid #049878;
   border-radius: 0;
   background: transparent;
-  color: ${props => props.$cursorColor || '#00A86B'};
+  color: #049878;
   cursor: pointer;
   align-self: flex-start;
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: ${props => props.$cursorColor || '#00A86B'};
+    background-color: #049878;
     color: white;
   }
 
@@ -125,8 +125,7 @@ const Form = styled.form`
 const Message = styled.p`
   font-size: 14px;
   margin: 0;
-  color: ${props => props.$cursorColor || '#00A86B'};
-  transition: color 0.6s ease-out;
+  color: #049878;
 `
 
 function Footer(props) {
@@ -182,25 +181,22 @@ function Footer(props) {
               placeholder="Enter email address" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              $cursorColor={props.cursorColor}
               required
             />
             <Textarea 
               placeholder="Reason for interest in the Jade Raymond Foundation" 
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              $cursorColor={props.cursorColor}
               required
             />
           </FormGroup>
           <SubmitButton 
             type="submit" 
             disabled={isSubmitting}
-            $cursorColor={props.cursorColor}
           >
             {isSubmitting ? 'Submitting...' : 'Submit'}
           </SubmitButton>
-          {message && <Message $cursorColor={props.cursorColor}>{message}</Message>}
+          {message && <Message>{message}</Message>}
         </Form>
       </Subsection>
 
