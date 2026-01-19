@@ -91,7 +91,7 @@ function App() {
     
     let animationFrameId
     const startTime = Date.now()
-    const animationDuration = 8000
+    const animationDuration = 16000
     
     const animate = () => {
       const elapsed = Date.now() - startTime
