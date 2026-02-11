@@ -1,43 +1,47 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { GRID } from '../grid/config.js'
 
 const GridContainer = styled.div`
+  box-sizing: border-box;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  max-width: 100vw;
   height: 100%;
   pointer-events: none;
   z-index: -1;
-  opacity: ${props => props.$isLoaded ? 1 : 0};
-  transition: opacity 0.6s ease-in-out;
-  transition-delay: ${props => props.$delay}s;
+  overflow: hidden;
 `
 
 const GridInner = styled.div`
+  box-sizing: border-box;
   width: 100%;
-  max-width: 1700px;
+  max-width: min(${GRID.MAX_WIDTH}px, 100%);
   height: 100%;
   margin: 0 auto;
   display: ${props => props.$isVisible ? 'grid' : 'none'};
-  grid-template-columns: repeat(12, 1fr);
-  gap: 20px;
-  padding: 0 50px;
+  grid-template-columns: repeat(${GRID.COLUMNS}, 1fr);
+  gap: ${GRID.GAP}px;
+  padding: 0 ${GRID.PADDING}px;
+  overflow: hidden;
 
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(4, 1fr);
-    padding: 0 20px;
-    gap: 1rem;
+  @media (max-width: ${GRID.BREAKPOINT}) {
+    grid-template-columns: repeat(${GRID.COLUMNS_MOBILE}, 1fr);
+    padding: 0 ${GRID.PADDING_MOBILE}px;
+    gap: ${GRID.GAP_MOBILE};
   }
 `
 
-
 const GridColumn = styled.div`
+  box-sizing: border-box;
+  min-width: 0;
   background-color: #f5f5f5;
   min-height: 100vh;
 `
 
-function GridOverlay(props) {
+function GridOverlay() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -54,9 +58,9 @@ function GridOverlay(props) {
   }, [])
 
   return (
-    <GridContainer $isLoaded={props.isLoaded} $delay={props.delay}>
+    <GridContainer>
       <GridInner $isVisible={isVisible}>
-        {Array.from({ length: 12 }).map((_, index) => (
+        {Array.from({ length: GRID.COLUMNS }).map((_, index) => (
           <GridColumn key={index} />
         ))}
       </GridInner>
