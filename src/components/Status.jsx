@@ -23,7 +23,7 @@ const StatusText = styled.p`
 
   @media (max-width: ${GRID.BREAKPOINT}) {
     font-size: 1.5rem;
-    margin-top: 3rem;
+    margin-top: 0rem;
   }
 `
 
@@ -66,9 +66,9 @@ function Status() {
     <Section aria-labelledby="status-heading">
       <Grid>
         <GridCell $start={1} $span={3} $startMobile={1} $spanMobile={4}>
-          <h2 id="status-heading" className="section-heading-type">
-            ● Status
-          </h2>
+          <div className="section-header">
+            <h2 id="status-heading" className="section-heading-type">● Status</h2>
+          </div>
         </GridCell>
         <GridCell $start={1} $span={12} $startMobile={1} $spanMobile={4}>
           <StatusText ref={textRef}>

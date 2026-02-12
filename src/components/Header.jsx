@@ -81,6 +81,11 @@ const BodyBlock = styled.div`
 
 const IntroWrap = styled.div`
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+
+  @media (max-width: ${GRID.BREAKPOINT}) {
+    /* Align body text with "Raymond" (column 4) in TitleBlock’s 12-col grid */
+    padding-left: calc(3 * (100% / 12) + 4px);
+  }
 `
 
 const IntroWord = styled.span`

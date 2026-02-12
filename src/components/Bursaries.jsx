@@ -38,11 +38,6 @@ const AsciiBackground = styled.div`
   z-index: 0;
 `
 
-const SectionHeading = styled.div`
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 3rem;
-`
 
 const Block = styled.div`
   opacity: 0;
@@ -97,7 +92,7 @@ const BURSARIES = [
     title: "St. George's\nSchool Bursary",
     description:
       "St. George's School Bursary, highlighting the school's emphasis on creative thinking and self-expression.",
-    href: '#',
+    href: 'https://www.stgeorges.qc.ca/admissions/tuition-scholarships-bursaries/',
     $start: 4,
     $span: 6,
     marginBottom: '10rem',
@@ -106,7 +101,7 @@ const BURSARIES = [
     title: 'McGill Women in\nComputer Science',
     description:
       'McGill Women in Computer Science Scholarship, supporting women entering technical fields.',
-    href: '#',
+    href: 'https://www.youtube.com/watch?v=OAaRIYWLyA4',
     $start: 1,
     $span: 7,
     marginBottom: '5rem',
@@ -115,7 +110,7 @@ const BURSARIES = [
     title: 'Selwyn House\nScholarship',
     description:
       "Selwyn House Scholarship, supporting boys' education in parallel with other youth-focused initiatives.",
-    href: '#',
+    href: 'https://www.selwyn.ca/admissions/tuition-and-bursaries#:~:text=For%20new%20students%20entering%20Grades,assessed%20on%20an%20individual%20basis.',
     $start: 6,
     $span: 6,
     marginBottom: '0',
@@ -156,11 +151,9 @@ function Bursaries() {
       </AsciiBackground>
       <Grid style={{ position: 'relative', zIndex: 1 }}>
         <GridCell $start={1} $span={3} $startMobile={1} $spanMobile={4}>
-          <SectionHeading>
-            <h2 id="bursaries-heading" className="section-heading-type">
-              ● Bursaries
-            </h2>
-          </SectionHeading>
+          <div className="section-header">
+            <h2 id="bursaries-heading" className="section-heading-type">● Bursaries</h2>
+          </div>
         </GridCell>
         {BURSARIES.map((b, i) => (
           <GridCell
@@ -176,7 +169,12 @@ function Bursaries() {
                   {b.title}
                 </BursaryTitle>
                 <Description className="body-type">{b.description}</Description>
-                <LearnMoreButton as="a" href={b.href}>
+                <LearnMoreButton
+                  as="a"
+                  href={b.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Learn More
                 </LearnMoreButton>
               </BursaryItem>

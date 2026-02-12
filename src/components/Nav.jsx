@@ -5,6 +5,13 @@ import { GRID } from '../grid'
 
 const NAV_ITEMS = ['About', 'Focus Areas', 'Bursaries', 'Status']
 
+const SECTION_IDS = {
+  'About': 'about-heading',
+  'Focus Areas': 'focus-areas-heading',
+  'Bursaries': 'bursaries-heading',
+  'Status': 'status-heading',
+}
+
 /* ── Wrapper: full width, flex center, starts below viewport, animates up when loading ends ── */
 const NavWrapper = styled.div`
   position: fixed;
@@ -18,6 +25,8 @@ const NavWrapper = styled.div`
 
   @media (max-width: ${GRID.BREAKPOINT}) {
     bottom: 16px;
+    width: calc(100% - 20px);
+    margin: 0 auto;
   }
 `
 
@@ -57,8 +66,9 @@ const NavItem = styled.button`
   transition: color 0.25s ease;
 
   @media (max-width: ${GRID.BREAKPOINT}) {
-    padding: 8px 14px;
-    font-size: 1rem;
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    border-radius: 4px;
   }
 `
 
@@ -82,13 +92,19 @@ const Indicator = styled.span`
   }
 `
 
+const SECTION_IDS_LIST = NAV_ITEMS.map((label) => SECTION_IDS[label])
+const UPDATES_HEADING_ID = 'updates-form-heading'
+
 function Nav({ loadingComplete }) {
   const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(null)
   const [indicatorStyle, setIndicatorStyle] = useState({ width: 0, x: 0, visible: false })
   const itemRefs = useRef([])
   const barRef = useRef(null)
   const wrapperRef = useRef(null)
   const hasAnimatedRef = useRef(false)
+
+  const effectiveIndex = hoveredIndex !== null ? hoveredIndex : activeIndex ?? null
 
   useEffect(() => {
     if (!loadingComplete || !wrapperRef.current || hasAnimatedRef.current) return
@@ -119,11 +135,88 @@ function Nav({ loadingComplete }) {
     })
   }, [])
 
+  const scrollToSection = useCallback((label) => {
+    const id = SECTION_IDS[label]
+    if (!id) return
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [])
+
   useEffect(() => {
-    const onResize = () => updateIndicator(hoveredIndex)
+    // Reference line: section containing this viewport Y is "active" (works both scroll directions)
+    const refY = 0.3 * window.innerHeight
+
+    const computeActive = () => {
+      const tops = SECTION_IDS_LIST.map((id) => {
+        const el = document.getElementById(id)
+        return el ? el.getBoundingClientRect().top : Infinity
+      })
+      const updatesEl = document.getElementById(UPDATES_HEADING_ID)
+      const updatesTop = updatesEl ? updatesEl.getBoundingClientRect().top : Infinity
+
+      if (tops[0] === Infinity) return
+
+      if (refY < tops[0]) {
+        setActiveIndex(null)
+        return
+      }
+      if (refY >= updatesTop) {
+        setActiveIndex(null)
+        return
+      }
+
+      for (let i = 0; i < SECTION_IDS_LIST.length; i++) {
+        const sectionBottom = i < SECTION_IDS_LIST.length - 1 ? tops[i + 1] : updatesTop
+        if (refY >= tops[i] && refY < sectionBottom) {
+          setActiveIndex(i)
+          return
+        }
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      () => computeActive(),
+      { rootMargin: '0px', threshold: 0 }
+    )
+    SECTION_IDS_LIST.forEach((id) => {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    })
+    const updatesEl = document.getElementById(UPDATES_HEADING_ID)
+    if (updatesEl) observer.observe(updatesEl)
+
+    let ticking = false
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        computeActive()
+        ticking = false
+      })
+    }
+
+    computeActive()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', computeActive)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', computeActive)
+    }
+  }, [])
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => updateIndicator(effectiveIndex))
+    return () => cancelAnimationFrame(id)
+  }, [effectiveIndex, updateIndicator])
+
+  useEffect(() => {
+    const onResize = () => updateIndicator(effectiveIndex)
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [hoveredIndex, updateIndicator])
+  }, [effectiveIndex, updateIndicator])
 
   return (
     <NavWrapper ref={wrapperRef}>
@@ -139,14 +232,14 @@ function Nav({ loadingComplete }) {
         <NavItem
           key={label}
           ref={(el) => { itemRefs.current[i] = el }}
-          $active={i === hoveredIndex}
+          $active={i === effectiveIndex}
+          onClick={() => scrollToSection(label)}
           onMouseEnter={() => {
             setHoveredIndex(i)
             updateIndicator(i)
           }}
           onMouseLeave={() => {
             setHoveredIndex(null)
-            updateIndicator(null)
           }}
         >
           {label}

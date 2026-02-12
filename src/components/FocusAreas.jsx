@@ -8,27 +8,15 @@ const Section = styled.section`
 
   @media (max-width: ${GRID.BREAKPOINT}) {
     padding: 3rem 0;
-    & > div > div:nth-child(n + 3) {
-      margin-top: 2.5rem;
+    & > div > div:nth-child(n + 2) {
+      margin-top: 1.5rem;
     }
   }
 `
 
-const SectionHeading = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  margin-bottom: 3rem;
-
-  @media (max-width: ${GRID.BREAKPOINT}) {
-    margin-bottom: 3rem;
-  }
-
-`
 
 const ColumnHeading = styled.h3`
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-weight: 800;
   font-weight: 700;
   font-size: 60px;
   letter-spacing: -0.025em;
@@ -43,16 +31,21 @@ const ColumnHeading = styled.h3`
 
   @media (max-width: ${GRID.BREAKPOINT}) {
     font-size: 1.5rem;
-    margin-top: 3rem;
   }
-`
 
-const Description = styled.p`
-  margin: 0;
+  @media (max-width: ${GRID.BREAKPOINT}) {
+    & > div > div:not(:first-child) {
+      margin-top: 1.5rem;
+    }
+  }
 `
 
 const Block = styled.div`
   opacity: 0;
+`
+
+const Description = styled.p`
+  margin: 0;
 `
 
 const AREAS = [
@@ -97,7 +90,7 @@ function FocusAreas() {
           }
         )
       },
-      { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+      { threshold: 0.75, rootMargin: '0px 0px -50px 0px' }
     )
     observer.observe(section)
     return () => observer.disconnect()
@@ -107,11 +100,9 @@ function FocusAreas() {
     <Section aria-labelledby="focus-areas-heading">
       <Grid>
         <GridCell $start={1} $span={12} $startMobile={1} $spanMobile={4}>
-          <SectionHeading>
-            <h2 id="focus-areas-heading" className="section-heading-type">
-            ● Focus Areas
-            </h2>
-          </SectionHeading>
+          <div className="section-header">
+            <h2 id="focus-areas-heading" className="section-heading-type">● Focus Areas</h2>
+          </div>
         </GridCell>
         {AREAS.map((area, i) => (
           <GridCell
@@ -123,7 +114,19 @@ function FocusAreas() {
           >
             <Block ref={(el) => (blockRefs.current[i] = el)}>
               <ColumnHeading>
-                {area.title === 'Emerging Innovators' ? (
+                {area.title === 'Creativity & Imagination' ? (
+                  <>
+                    Creativity
+                    <br />
+                    & Imagination
+                  </>
+                ) : area.title === 'Learning & Exploration' ? (
+                  <>
+                    Learning
+                    <br />
+                    & Exploration
+                  </>
+                ) : area.title === 'Emerging Innovators' ? (
                   <>
                     Emerging
                     <br />

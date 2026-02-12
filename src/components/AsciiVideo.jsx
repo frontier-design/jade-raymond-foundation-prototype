@@ -337,7 +337,13 @@ function AsciiVideo({ src = jadeVideo, width, height, style, className, fontSize
     }
 
     video.addEventListener('loadeddata', handleLoaded)
-    if (video.readyState >= 2) handleLoaded()
+    if (video.readyState >= 2) {
+      handleLoaded()
+    } else {
+      // Mobile (iOS Safari) ignores preload="auto" — a play() call
+      // forces the browser to fetch video data so loadeddata fires.
+      video.play().then(() => video.pause()).catch(() => {})
+    }
 
     return () => {
       video.removeEventListener('loadeddata', handleLoaded)
@@ -357,6 +363,7 @@ function AsciiVideo({ src = jadeVideo, width, height, style, className, fontSize
       <HiddenVideo
         ref={videoRef}
         src={src}
+        autoPlay
         muted
         playsInline
         crossOrigin="anonymous"

@@ -89,15 +89,35 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
-  /* Global section header (e.g. About, Focus Areas) */
+  /* Global section header wrapper (● About, ● Focus Areas, etc.) */
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (max-width: ${GRID.BREAKPOINT}) {
+    .section-header {
+      margin-bottom: 3rem;
+    }
+  }
+
+  /* Global section heading typography */
   .section-heading-type {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-weight: 350;
-    font-size: clamp(1.25rem, 1.5vw, 1.5rem);
-    line-height: 1.15;
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.35;
     letter-spacing: -0.025em;
     color: var(--color-heading);
     margin: 0;
+    scroll-margin-top: 6rem;
+
+    @media (max-width: ${GRID.BREAKPOINT}) {
+      font-size: 1rem;
+      scroll-margin-top: 5rem;
+    }
   }
 `;
 

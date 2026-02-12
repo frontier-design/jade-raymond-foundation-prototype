@@ -43,18 +43,6 @@ const AsciiBackground = styled.div`
   z-index: 0;
 `
 
-const AboutHeading = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-
-  /* give margin bottom on mobile */
-  @media (max-width: ${GRID.BREAKPOINT}) {
-    margin-bottom: 3rem;
-  }
-`
-
-
 const Paragraph = styled.p`
   margin: 0;
   opacity: 0;
@@ -133,11 +121,9 @@ function About() {
       </AsciiBackground>
       <Grid style={{ position: 'relative', zIndex: 1 }}>
         <GridCell $start={1} $span={2} $startMobile={1} $spanMobile={4}>
-          <AboutHeading>
-            <h2 id="about-heading" className="section-heading-type">
-            ● About
-            </h2>
-          </AboutHeading>
+          <div className="section-header">
+            <h2 id="about-heading" className="section-heading-type">● About</h2>
+          </div>
         </GridCell>
         <GridCell $start={4} $span={10} $startMobile={1} $spanMobile={4}>
           <Paragraph ref={(el) => (paragraphRefs.current[0] = el)}>{PARAGRAPH_1}</Paragraph>
