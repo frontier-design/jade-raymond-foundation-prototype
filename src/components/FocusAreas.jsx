@@ -25,8 +25,12 @@ const ColumnHeading = styled.h3`
   margin-bottom: 1.5rem;
 
   @media (max-width: 1310px) {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
     margin-bottom: 1.15rem;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 1.95rem;
   }
 
   @media (max-width: ${GRID.BREAKPOINT}) {
@@ -118,13 +122,13 @@ function FocusAreas() {
                   <>
                     Creativity
                     <br />
-                    & Imagination
+                    {'&\u00A0Imagination'}
                   </>
                 ) : area.title === 'Learning & Exploration' ? (
                   <>
                     Learning
                     <br />
-                    & Exploration
+                    {'&\u00A0Exploration'}
                   </>
                 ) : area.title === 'Emerging Innovators' ? (
                   <>

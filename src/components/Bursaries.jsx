@@ -98,7 +98,7 @@ const BURSARIES = [
     marginBottom: '10rem',
   },
   {
-    title: 'McGill Women in\nComputer Science',
+    title: 'McGill Women\nin\u00A0Computer Science',
     description:
       'McGill Women in Computer Science Scholarship, supporting women entering technical fields.',
     href: 'https://www.youtube.com/watch?v=OAaRIYWLyA4',
