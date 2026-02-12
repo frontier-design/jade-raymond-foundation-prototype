@@ -61,7 +61,9 @@ const Paragraph = styled.p`
 const Strong = styled.strong`
   font-weight: 300;
   /* color: var(--color-strong-text); */
-  /* background-color: var(--color-strong-bg); */
+  color: var(--color-body);
+  /* padding: 0.25rem 0.5rem; */
+  background-color: #a1a1a146;
 `
 
 const PARAGRAPH_1 = (

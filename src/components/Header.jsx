@@ -79,6 +79,13 @@ const BodyBlock = styled.div`
   display: contents;
 `
 
+/* Wider intro text between 840px and 780px to avoid cramped line breaks */
+const IntroCell = styled(GridCell)`
+  @media (max-width: 840px) and (min-width: 781px) {
+    grid-column: 4 / span 5;
+  }
+`
+
 const IntroWrap = styled.div`
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
 
@@ -142,7 +149,7 @@ function Header({ loadingComplete }) {
           </TitleCell>
         </TitleBlock>
         <BodyBlock>
-          <GridCell $start={4} $span={3} $startMobile={1} $spanMobile={4}>
+          <IntroCell $start={4} $span={3} $startMobile={1} $spanMobile={4}>
             <IntroWrap $visible={loadingComplete}>
               <p ref={introRef} className="body-type">
                 {INTRO_WORDS.map((word, i) => (
@@ -152,7 +159,7 @@ function Header({ loadingComplete }) {
                 ))}
               </p>
             </IntroWrap>
-          </GridCell>
+          </IntroCell>
         </BodyBlock>
       </Grid>
     </HeaderWrapper>
