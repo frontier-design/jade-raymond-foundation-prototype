@@ -54,7 +54,7 @@ const Paragraph = styled.p`
 
   @media (max-width: ${GRID.BREAKPOINT}) {
     font-size: 1.25rem;
-    font-weight: 350;
+    font-weight: 350; 
   }
 `
 

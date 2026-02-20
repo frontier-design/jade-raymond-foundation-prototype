@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { gsap } from 'gsap'
 import { Grid, GridCell, GRID } from '../grid'
+
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit'
 
 const Block = styled.div`
   opacity: 0;
@@ -94,8 +96,13 @@ const SubmitButton = styled.button`
   border-radius: 8px;
   transition: opacity 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     opacity: 0.85;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 
   @media (max-width: ${GRID.BREAKPOINT}) {
@@ -104,9 +111,56 @@ const SubmitButton = styled.button`
   }
 `
 
+const StatusMessage = styled.p`
+  margin: 0;
+  font-size: 0.9rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: ${(p) => (p.$error ? '#c00' : 'var(--color-body)')};
+`
+
 function UpdatesForm() {
   const blockRefs = useRef([])
   const animatedRef = useRef(false)
+  const [status, setStatus] = useState('idle') // 'idle' | 'submitting' | 'success' | 'error'
+  const [message, setMessage] = useState('')
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    const form = e.target
+    const formData = new FormData(form)
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
+    if (!accessKey) {
+      setStatus('error')
+      setMessage('Form is not configured. Missing access key.')
+      return
+    }
+    setStatus('submitting')
+    setMessage('')
+    try {
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: accessKey,
+          email: formData.get('email'),
+          reason: formData.get('reason'),
+          subject: 'Jade Raymond Foundation – Updates signup',
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setStatus('success')
+        setMessage('We received your interest in the Jade Raymond Foundation. Thank you!')
+        form.reset()
+      } else {
+        setStatus('error')
+        setMessage(data.message || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      setStatus('error')
+      setMessage('Network error. Please try again.')
+    }
+  }
 
   useEffect(() => {
     const section = blockRefs.current[0]?.closest('section')
@@ -148,7 +202,7 @@ function UpdatesForm() {
         </GridCell>
         <GridCell $start={7} $span={6} $startMobile={1} $spanMobile={4}>
           <Block ref={(el) => (blockRefs.current[1] = el)}>
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleSubmit}>
               <FormGroup>
                 <Input
                   type="email"
@@ -156,14 +210,23 @@ function UpdatesForm() {
                   placeholder="E-Mail"
                   aria-label="Email address"
                   required
+                  disabled={status === 'submitting'}
                 />
                 <Textarea
                   name="reason"
                   placeholder={'Reason for interest in\nthe Jade Raymond Foundation'}
                   aria-label="Reason for interest"
                   rows={4}
+                  disabled={status === 'submitting'}
                 />
-                <SubmitButton type="submit">Submit</SubmitButton>
+                <SubmitButton type="submit" disabled={status === 'submitting'}>
+                  {status === 'submitting' ? 'Sending…' : 'Submit'}
+                </SubmitButton>
+                {message && (
+                  <StatusMessage role="status" $error={status === 'error'}>
+                    {message}
+                  </StatusMessage>
+                )}
               </FormGroup>
             </form>
           </Block>
