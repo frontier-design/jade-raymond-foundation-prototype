@@ -121,7 +121,7 @@ const StatusMessage = styled.p`
 function UpdatesForm() {
   const blockRefs = useRef([])
   const animatedRef = useRef(false)
-  const [status, setStatus] = useState('idle') // 'idle' | 'submitting' | 'success' | 'error'
+  const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
 
   async function handleSubmit(e) {
